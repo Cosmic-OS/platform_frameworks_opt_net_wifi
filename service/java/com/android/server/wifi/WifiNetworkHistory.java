@@ -37,6 +37,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.BitSet;
@@ -332,6 +333,8 @@ public class WifiNetworkHistory {
 
             String bssid = null;
             String ssid = null;
+            String key = null;
+            String value = null;
 
             int freq = 0;
             int status = 0;
@@ -346,12 +349,16 @@ public class WifiNetworkHistory {
                     break;
                 }
                 int colon = line.indexOf(':');
-                if (colon < 0) {
+                char slash = line.charAt(0);
+                if ((colon < 0)&& (slash != '/')) {
                     continue;
                 }
-
-                String key = line.substring(0, colon).trim();
-                String value = line.substring(colon + 1).trim();
+                if (slash == '/') {
+                    key = line.trim();
+                } else {
+                    key = line.substring(0, colon).trim();
+                    value = line.substring(colon + 1).trim();
+                }
 
                 if (key.equals(CONFIG_KEY)) {
                     config = configs.get(value);
@@ -485,8 +492,15 @@ public class WifiNetworkHistory {
                             break;
                         case BSSID_KEY:
                             status = 0;
-                            ssid = null;
-                            bssid = null;
+                            /*
+                             * The intention here is to put the scanDetail in to
+                             * the scanDetailCache per config , as done in
+                             * BSSID_KEY_END . Thus store bssid value and
+                             * comment ssid = null to ensure the code in the if
+                             * loop is executed for the case BSSID_KEY_END.
+                             */
+                        //   ssid = null;
+                            bssid = value;
                             freq = 0;
                             seen = 0;
                             rssi = WifiConfiguration.INVALID_RSSI;
@@ -543,12 +557,14 @@ public class WifiNetworkHistory {
                     }
                 }
             }
-        } catch (NumberFormatException e) {
-            Log.e(TAG, "readNetworkHistory: failed to read, revert to default, " + e, e);
         } catch (EOFException e) {
             // do nothing
+        } catch (FileNotFoundException e) {
+            Log.i(TAG, "readNetworkHistory: no config file, " + e);
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "readNetworkHistory: failed to parse, " + e, e);
         } catch (IOException e) {
-            Log.e(TAG, "readNetworkHistory: No config file, revert to default, " + e, e);
+            Log.e(TAG, "readNetworkHistory: failed to read, " + e, e);
         }
     }
 

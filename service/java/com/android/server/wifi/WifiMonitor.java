@@ -612,7 +612,7 @@ public class WifiMonitor {
         while (true) {
             if (mWifiNative.connectToSupplicant()) {
                 mConnected = true;
-                new MonitorThread().start();
+                new MonitorThread(mWifiNative.getLocalLog()).start();
                 return true;
             }
             if (connectTries++ < 50) {
@@ -741,10 +741,11 @@ public class WifiMonitor {
     }
 
     private class MonitorThread extends Thread {
-        private final LocalLog mLocalLog = mWifiNative.getLocalLog();
+        private final LocalLog mLocalLog;
 
-        public MonitorThread() {
+        public MonitorThread(LocalLog localLog) {
             super("WifiMonitor");
+            mLocalLog = localLog;
         }
 
         public void run() {
@@ -835,7 +836,10 @@ public class WifiMonitor {
         }
 
         if (!eventStr.startsWith(EVENT_PREFIX_STR)) {
-            if (eventStr.startsWith(WPS_SUCCESS_STR)) {
+            if (eventStr.startsWith(WPA_EVENT_PREFIX_STR) &&
+                    0 < eventStr.indexOf(PASSWORD_MAY_BE_INCORRECT_STR)) {
+                sendMessage(iface, AUTHENTICATION_FAILURE_EVENT);
+            } else if (eventStr.startsWith(WPS_SUCCESS_STR)) {
                 sendMessage(iface, WPS_SUCCESS_EVENT);
             } else if (eventStr.startsWith(WPS_FAIL_STR)) {
                 handleWpsFailEvent(eventStr, iface);
