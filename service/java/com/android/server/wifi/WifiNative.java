@@ -117,26 +117,6 @@ public class WifiNative {
         mHostapdHal.enableVerboseLogging(mVerboseLoggingEnabled);
     }
 
-    public static class WifiGenerationStatus {
-
-        public int generation;
-        public boolean vhtMax8SpatialStreamsSupport;
-        public boolean twtSupport;
-
-        public WifiGenerationStatus() {
-            generation = -1;
-            vhtMax8SpatialStreamsSupport = false;
-            twtSupport = false;
-        }
-
-        public WifiGenerationStatus(int generation, boolean vhtMax8SpatialStreamsSupport, boolean twtSupport) {
-            this.generation = generation;
-            this.vhtMax8SpatialStreamsSupport = vhtMax8SpatialStreamsSupport;
-            this.twtSupport = twtSupport;
-        }
-
-    }
-
     /********************************************************
      * Interface management related methods.
      ********************************************************/
@@ -2030,16 +2010,6 @@ public class WifiNative {
          mIs5GhzBandSupportedInitialized = true;
          mIs5GhzBandSupported = (ChannelsFor5GhzBand.length != 0);
          return mIs5GhzBandSupported;
-    }
-
-    /**
-     * Get wifi generation status from supplicant
-     *
-     * @param ifaceName Name of the interface.
-     * @return WifiGenerationStatus Wifi generation status fetched from supplicant.
-     */
-     public WifiGenerationStatus getWifiGenerationStatus(@NonNull String ifaceName) {
-         return mSupplicantStaIfaceHal.getWifiGenerationStatus(ifaceName);
     }
 
     /**

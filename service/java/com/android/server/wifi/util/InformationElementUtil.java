@@ -437,9 +437,6 @@ public class InformationElementUtil {
         public boolean isESS;
         public boolean isPrivacy;
         public boolean isWPS;
-        public boolean isHt;
-        public boolean isVht;
-        public boolean isHe;
 
         public Capabilities() {
         }
@@ -733,16 +730,6 @@ public class InformationElementUtil {
                         keyManagement.add(oweKeyManagement);
                     }
                 }
-
-                if (ie.id == InformationElement.EID_HT_CAPABILITIES) {
-                    isHt = true;
-                } else if (ie.id == InformationElement.EID_VHT_CAPABILITIES) {
-                    isVht = true;
-                } else if (ie.id == InformationElement.EID_EXTENSION &&
-                      ie.bytes != null && ie.bytes.length > 0 &&
-                      ((ie.bytes[0] & 0xFF) == InformationElement.EID_EXT_HE_CAPABILITIES)) {
-                    isHe = true;
-                }
             }
         }
 
@@ -848,15 +835,6 @@ public class InformationElementUtil {
             }
             if (isWPS) {
                 capabilities.append("[WPS]");
-            }
-            if (isHt) {
-                capabilities.append("[WFA-HT]");
-            }
-            if (isVht) {
-                capabilities.append("[WFA-VHT]");
-            }
-            if (isHe) {
-                capabilities.append("[WFA-HE]");
             }
 
             return capabilities.toString();
