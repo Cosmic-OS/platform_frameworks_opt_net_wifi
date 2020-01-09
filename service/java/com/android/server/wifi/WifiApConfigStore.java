@@ -16,8 +16,6 @@
 
 package com.android.server.wifi;
 
-import static android.net.wifi.WifiManager.WIFI_GENERATION_DEFAULT;
-
 import android.annotation.NonNull;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -98,7 +96,6 @@ public class WifiApConfigStore {
     private String mBridgeInterfaceName = null;
     private boolean mDualSapStatus = false;
 
-    private int mWifiGeneration = WIFI_GENERATION_DEFAULT;
 
     WifiApConfigStore(Context context, Looper looper,
             BackupManagerProxy backupManagerProxy, FrameworkFacade frameworkFacade) {
@@ -525,13 +522,5 @@ public class WifiApConfigStore {
         Intent intent = new Intent(action).setPackage("android");
         return mFrameworkFacade.getBroadcast(
                 mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    public void setWifiGeneration(int generation) {
-        mWifiGeneration = generation;
-    }
-
-    public int getWifiGeneration() {
-        return mWifiGeneration;
     }
 }

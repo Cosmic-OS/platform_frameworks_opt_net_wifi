@@ -440,9 +440,6 @@ public class InformationElementUtil {
         public boolean isHt;
         public boolean isVht;
         public boolean isHe;
-        public boolean reportHt;
-        public boolean reportVht;
-        public boolean reportHe;
 
         public Capabilities() {
         }
@@ -852,13 +849,13 @@ public class InformationElementUtil {
             if (isWPS) {
                 capabilities.append("[WPS]");
             }
-            if (reportHt && isHt) {
+            if (isHt) {
                 capabilities.append("[WFA-HT]");
             }
-            if (reportVht && isVht) {
+            if (isVht) {
                 capabilities.append("[WFA-VHT]");
             }
-            if (reportHe && isHe) {
+            if (isHe) {
                 capabilities.append("[WFA-HE]");
             }
 
